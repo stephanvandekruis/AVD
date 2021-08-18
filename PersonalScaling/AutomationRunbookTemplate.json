@@ -7,14 +7,14 @@
             "metadata": {
                 "description": "The name of the automation account"
             },
-            "defaultValue": "WVDAutoScaleAutomationAccount"
+            "defaultValue": "AutoAVDAutoShutdown"
         },
         "runbookName": {
             "type": "String",
             "metadata": {
                 "description": "The name of the Runbook"
             },
-            "defaultValue": "WVDAutoScaleRunbook"
+            "defaultValue": "AVDPersonalAutoShutdown"
         },
         "scriptUri": {
             "type": "String",

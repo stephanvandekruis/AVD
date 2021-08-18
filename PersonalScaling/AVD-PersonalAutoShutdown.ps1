@@ -1,18 +1,18 @@
 param(
 	[Parameter(mandatory = $true)]
-	[string]$AADTenantId = '385d54f0-70d2-4728-bd56-3fe93e0fd296',
+	[string]$AADTenantId,
 	 
 	[Parameter(mandatory = $true)]
-	[string]$SubscriptionId = '3e738a78-cead-4895-b39b-0aaee988a0bd',
+	[string]$SubscriptionId,
 	
 	[Parameter(mandatory = $true)]
-	[string]$AVDrg = "AVD-AADjoin",
+	[string]$AVDrg,
 
     [Parameter(mandatory = $true)]
-	[string]$SessionHostrg = "AVD-AADjoin",
+	[string]$SessionHostrg,
 
     [Parameter(mandatory = $true)]
-	[string]$HostPoolName = "AADjoin",
+	[string]$HostPoolName,
 
     [Parameter(mandatory = $false)]
 	[string]$SkipTag = "SkipAutoShutdown",
@@ -161,4 +161,4 @@ $DisconnectInfo = Disconnect-AzAccount
 Write-Log 'End'
 
 #disconnect
-$DisconnectInfo = Disconnect-AzAccount
+

@@ -39,30 +39,6 @@ param(
 	[string]$Location = "West Europe"
 )
 
-<# temp, required parameters AVD-PersonalAutoshutdown.ps1
-	[Parameter(mandatory = $true)]
-	[string]$AADTenantId,
-	 
-	[Parameter(mandatory = $true)]
-	[string]$SubscriptionId,
-	
-	[Parameter(mandatory = $true)]
-	[string]$AVDrg,
-
-    [Parameter(mandatory = $true)]
-	[string]$SessionHostrg,
-
-    [Parameter(mandatory = $true)]
-	[string]$HostPoolName,
-
-    [Parameter(mandatory = $false)]
-	[string]$SkipTag = "SkipAutoShutdown",
-    
-    [Parameter(mandatory = $false)]
-	[string]$TimeDifference = "+2:00"
-
-#>
-
 
 # Setting ErrorActionPreference to stop script execution when error occurs
 $ErrorActionPreference = "Stop"
@@ -238,9 +214,6 @@ if ($DeploymentStatus.ProvisioningState -ne 'Succeeded') {
 	throw "Some error occurred while deploying a runbook. Deployment Provisioning Status: $($DeploymentStatus.ProvisioningState)"
 }
 
-
-
-
 # Required modules imported from Automation Account Modules gallery for Scale Script execution
 foreach ($ModuleName in $RequiredModules) {
 	Add-ModuleToAutoAccount -ResourceGroupName $AutomationRG -AutomationAccountName $AutomationAccountName -ModuleName $ModuleName
@@ -261,7 +234,7 @@ $ScheduleParams = @{
 	"TimeZone" = $TimeZone = ([System.TimeZoneInfo]::Local).Id
 }
 
-$AutomationScheduleOutput = New-AzAutomationSchedule @ScheduleParams
+$AutomationScheduleOutput = New-AzAutomationSchedule @ScheduleParams 
 
 Write-Output "Azure Automation Schedule $($AutomationScheduleOutput.Name) will first run on $($AutomationScheduleOutput.NextRun)"
 
@@ -271,10 +244,12 @@ $AVDParams = @{
 	"AADTenantId"		= $AADTenantId
 	"SubscriptionId"	= $SubscriptionId
 	"AVDrg"				= $AVDrg
+	"AutomationRG" 		= $AutomationRG
 	"SessionHostrg"		= $SessionHostrg
 	"HostPoolName"		= $HostPoolName
 	"SkipTag"			= $SkipTag
 	"TimeDifference"	= $TimeDifference
+	"AutomationAccountName" = $AutomationAccountName
 }
 
 #Connecting Runbook to Azure Automation Schedule
@@ -289,6 +264,21 @@ $RegisterParams = @{
 $RegisterScheduleOutput = Register-AzAutomationScheduledRunbook @RegisterParams
 
 Write-Output "Azure Automation Schedule $($AutomationScheduleOutput.Name) is connected to $RunbookName will first run on $($AutomationScheduleOutput.NextRun)"
-Write-Output "Do not forget to create a run as account."
+
+Write-Output "Checking if a run as account is present"
+Write-Output "Checking for the default connection name AzureRunAsConnection"
+
+$connectionName = "AzureRunAsConnection"
+
+$RunAsAccount = Get-AzAutomationConnection -ResourceGroupName $AutomationRG -AutomationAccountName $AutomationAccountName -Name $connectionName -ErrorAction SilentlyContinue
+
+if(!$RunAsAccount) {
+	Write-Host "No Run as Account found in the current autmation account - $AutomationAccountName" -ForegroundColor Red
+	Write-Host "Do not forget to create a Run As account inorder for the script to function" -ForegroundColor Red
+}else {
+	Write-Host "Run As account found, no further action required" -ForegroundColor Green
+}
+
+
 Write-Output "The script has completed successfully"
 Write-Output "End"

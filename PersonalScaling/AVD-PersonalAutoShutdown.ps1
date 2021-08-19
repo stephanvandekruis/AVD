@@ -8,6 +8,9 @@ param(
 	[Parameter(mandatory = $true)]
 	[string]$AVDrg,
 
+    [Parameter(mandatory = $false)]
+	[string]$AutomationRG ,
+
     [Parameter(mandatory = $true)]
 	[string]$SessionHostrg,
 
@@ -66,7 +69,7 @@ $connectionName = "AzureRunAsConnection"
 try
 {
     # Get the connection "AzureRunAsConnection "
-    $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName         
+    $servicePrincipalConnection = Get-AzAutomationConnection -Name $connectionName -ResourceGroupName $AutomationRG -AutomationAccountName $AutomationAccountName         
 
     Write-log "Logging in to Azure..."
     $connecting = Connect-AzAccount `

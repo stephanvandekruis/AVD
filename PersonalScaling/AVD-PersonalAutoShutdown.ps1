@@ -72,7 +72,7 @@ $connectionName = "AzureRunAsConnection"
 try
 {
     # Get the connection "AzureRunAsConnection "
-    $servicePrincipalConnection = Get-AzAutomationConnection -Name $connectionName -ResourceGroupName $AutomationRG -AutomationAccountName $AutomationAccountName         
+    $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName         
 
     Write-log "Logging in to Azure..."
     $connecting = Connect-AzAccount `

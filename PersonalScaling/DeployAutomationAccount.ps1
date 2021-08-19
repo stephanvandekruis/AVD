@@ -1,38 +1,73 @@
-
 <#
 .SYNOPSIS
-	This is a sample script to deploy the required resources to execute scaling script in Microsoft Azure Automation Account.
-	v0.1.7
+  The script can be used to deploy an automation account with the AVD-PersonalAutoShutdown.ps1 script
+.DESCRIPTION
+This script does the following:
+* Checks if you have the apporopiate permissions
+* Checks if you have the correct modules installed on your computer 
+* Deploys a new resource group for the automation account (if needed)
+* Deploys a new Automation Account and imports the neccessary modules and runbook
+* Creates an Automation Schedule which runs every 1 hour
+* Connects the Runbook to the Schedule so it will start 
+* Validates if an Run As Account is present
+.PARAMETER AADTenantId
+    The tenant ID of the tenant you want to deploy this script in
+.PARAMETER SubscriptionId
+    Subscription ID of where the Session Hosts are hosted
+.PARAMETER AutomationRG
+    Name of the Resource Group to place the Automation account. Default value: rgAVDAutoShutdown
+.PARAMETER AutomationAccountName	
+	Name of the Automation account. Default value: AVDAutoScaleAccount
+.PARAMETER AutomationScheduleName
+	Name of the Automation Schedule Default value: AVDShutdownSchedule
+.PARAMETER AVDrg
+    The resource group where the Azure Virtual Desktop object (e.g. the host pool) is located
+.PARAMETER SessionHostrg
+    The resource group where the Virtual Machines that are connected to the Host Pool are located
+.PARAMETER HostPoolName
+    The host pool name you want to auto shutdown
+.PARAMETER SkipTag
+    The name of the tag, which will exclude the VM from scaling
+.PARAMETER TimeDifference
+    The time diference with UTC (e.g. +2:00)    
+.PARAMETER Location
+    Location on where to deploy the automation account                
+.NOTES
+  Version:        1.0
+  Author:         Stephan van de Kruis
+  Creation Date:  19/08/2021
+  Purpose/Change: Initial script development
+  
 #>
 param(
-	[Parameter(mandatory = $false)]
-	[string]$AADTenantId = '385d54f0-70d2-4728-bd56-3fe93e0fd296',
+	[Parameter(mandatory = $true)]
+	[string]$AADTenantId,
+	
+	[Parameter(mandatory = $true)]
+	[string]$SubscriptionId,
 	
 	[Parameter(mandatory = $false)]
-	[string]$SubscriptionId = '3e738a78-cead-4895-b39b-0aaee988a0bd',
-	
-	[Parameter(mandatory = $false)]
-	[string]$AutomationRG = "AVDAutoShutdownDEV",
+	[string]$AutomationRG = "rgAVDAutoShutdown",
 
 	[Parameter(mandatory = $false)]
-	[string] $AutomationAccountName = "AutoAVDAutoShutdown",
+	[string] $AutomationAccountName = "AVDAutoScaleAccount",
 
 	[Parameter(mandatory = $false)]
 	[string] $AutomationScheduleName = "AVDShutdownSchedule",
 
-	[Parameter(mandatory = $false)]
-	[string]$AVDrg = 'AVD-AADjoin',
+	[Parameter(mandatory = $true)]
+	[string]$AVDrg,
 
-	[Parameter(mandatory = $false)]
-	[string]$SessionHostrg = 'AVD-AADjoin',
+	[Parameter(mandatory = $true)]
+	[string]$SessionHostrg,
 
-	[Parameter(mandatory = $false)]
-	[string]$HostPoolName = 'AADjoin',
+	[Parameter(mandatory = $true)]
+	[string]$HostPoolName,
 
 	[Parameter(mandatory = $false)]
 	[string]$SkipTag = "SkipAutoShutdown",
     
-    [Parameter(mandatory = $false)]
+	[Parameter(mandatory = $false)]
 	[string]$TimeDifference = "+2:00" ,
 
 	[Parameter(mandatory = $false)]
@@ -265,7 +300,7 @@ Write-Output "Azure Automation Schedule $($AutomationScheduleOutput.Name) is con
 
 Write-Output "Checking if a run as account is present"
 Write-Output "Checking for the default connection name AzureRunAsConnection"
-
+#Checking if an Run As account is present
 $connectionName = "AzureRunAsConnection"
 
 $RunAsAccount = Get-AzAutomationConnection -ResourceGroupName $AutomationRG -AutomationAccountName $AutomationAccountName -Name $connectionName -ErrorAction SilentlyContinue
@@ -277,6 +312,6 @@ if(!$RunAsAccount) {
 	Write-Host "Run As account found, no further action required" -ForegroundColor Green
 }
 
-
+#Ending the script
 Write-Output "The script has completed successfully"
 Write-Output "End"

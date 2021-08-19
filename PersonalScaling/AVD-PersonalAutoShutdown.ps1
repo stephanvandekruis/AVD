@@ -1,3 +1,34 @@
+<#
+.SYNOPSIS
+  The script can be used to shut down Azure Virtual Desktop Personal Session Hosts which have no active sessions. 
+.DESCRIPTION
+The script does the following:
+* Checks if the host pool is set to personal, pooled is not supported
+* Checks if start on Connect is enabled. Link to how to configure this https://docs.microsoft.com/en-us/azure/virtual-desktop/start-virtual-machine-connect
+* Collects all the Session Hosts in the host pool
+* If the Session Host is running it checks if there is an active session, if there are no active sessions the Session Host will be Deallocated
+.PARAMETER AADTenantId
+    The tenant ID of the tenant you want to deploy this script in
+.PARAMETER SubscriptionId
+    Subscription ID of where the Session Hosts are hosted
+.PARAMETER AVDrg
+    The resource group where the Azure Virtual Desktop object (e.g. the host pool) is located
+.PARAMETER SessionHostrg
+    The resource group where the Virtual Machines that are connected to the Host Pool are located
+.PARAMETER HostPoolName
+    The host pool name you want to auto shutdown
+.PARAMETER SkipTag
+    The name of the tag, which will exclude the VM from scaling
+.PARAMETER TimeDifference
+    The time diference with UTC (e.g. +2:00)                    
+.NOTES
+  Version:        1.0
+  Author:         Stephan van de Kruis
+  Creation Date:  19/08/2021
+  Purpose/Change: Initial script development
+  
+#>
+
 param(
 	[Parameter(mandatory = $true)]
 	[string]$AADTenantId,
@@ -86,8 +117,6 @@ catch {
     }
 }
 
-
-
 #starting script
 Write-Log 'Starting AVD Personal Host Pool auto shutdown script'
 
@@ -103,8 +132,8 @@ if($Hostpool.HostPoolType -eq 'Personal'){
 if($Hostpool.StartVMOnConnect -eq 'True'){
     Write-Log 'Start on Connect is enabled for hostpool'
 } else {
-    throw "Start On connect is not enabled for the hostpool $($HostPool.Name)" 
-}
+    Write-Log 'Start on Connect is not enabled, save money and enable this feature'
+    }
 
 
 #Getting Session hosts information
@@ -147,8 +176,9 @@ foreach ($SessionHost in $Sessionhosts) {
         if ($Sessionhost.Session -eq '0'  -and $Sessionhost.Status -eq 'Available'){
             Write-Log "$SessionHostName is running, but has no active sessions"
             Write-Log "Trying to deallocate $SessionHostName"
-            $StopVM = Stop-AzVM -Name $SessionHostName -ResourceGroupName $ResourceGroupName -Force
+            $StopVM = Stop-AzVM -Name $SessionHostName -ResourceGroupName $SessionHostrg -Force
             Write-Log "Stopping $SessionhostName ended with status: $($StopVM.Status)"
+            #Create Extra check
         }   
     }  
 
@@ -159,6 +189,3 @@ Write-Log 'Disconnecting AZ Session'
 $DisconnectInfo = Disconnect-AzAccount
 
 Write-Log 'End'
-
-#disconnect
-

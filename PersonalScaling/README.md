@@ -35,7 +35,7 @@ New-Item -ItemType Directory -Path "C:\Temp" -Force
 Set-Location -Path "C:\Temp"
 $Uri = "https://raw.githubusercontent.com/stephanvandekruis/AVD/main/PersonalScaling/DeployAutomationAccount.ps1"
 # Download the script
-Invoke-WebRequest -Uri $Uri -OutFile ".\CreateOrUpdateAzAutoAccount.ps1"
+Invoke-WebRequest -Uri $Uri -OutFile ".\DeployAutomationAccount.ps1"
 ```
 
 Log in to your environment

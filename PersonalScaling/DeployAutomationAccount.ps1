@@ -244,12 +244,10 @@ $AVDParams = @{
 	"AADTenantId"		= $AADTenantId
 	"SubscriptionId"	= $SubscriptionId
 	"AVDrg"				= $AVDrg
-	"AutomationRG" 		= $AutomationRG
 	"SessionHostrg"		= $SessionHostrg
 	"HostPoolName"		= $HostPoolName
 	"SkipTag"			= $SkipTag
 	"TimeDifference"	= $TimeDifference
-	"AutomationAccountName" = $AutomationAccountName
 }
 
 #Connecting Runbook to Azure Automation Schedule

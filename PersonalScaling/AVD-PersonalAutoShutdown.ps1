@@ -8,9 +8,6 @@ param(
 	[Parameter(mandatory = $true)]
 	[string]$AVDrg,
 
-    [Parameter(mandatory = $false)]
-	[string]$AutomationRG ,
-
     [Parameter(mandatory = $true)]
 	[string]$SessionHostrg,
 
@@ -21,10 +18,7 @@ param(
 	[string]$SkipTag = "SkipAutoShutdown",
     
     [Parameter(mandatory = $false)]
-	[string]$TimeDifference = "+2:00",
-
-    [Parameter(mandatory = $true)]
-	[string]$AutomationAccountName
+	[string]$TimeDifference = "+2:00"
 
 )
 

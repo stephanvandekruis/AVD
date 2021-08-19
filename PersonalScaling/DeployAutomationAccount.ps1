@@ -50,7 +50,7 @@ param(
 	[string]$AutomationRG = "rgAVDAutoShutdown",
 
 	[Parameter(mandatory = $false)]
-	[string] $AutomationAccountName = "AVDAutoScaleAccount",
+	[string] $AutomationAccountName = "AVDAutoShutdownAutomationAccount",
 
 	[Parameter(mandatory = $false)]
 	[string] $AutomationScheduleName = "AVDShutdownSchedule",

@@ -21,7 +21,10 @@ param(
 	[string]$SkipTag = "SkipAutoShutdown",
     
     [Parameter(mandatory = $false)]
-	[string]$TimeDifference = "+2:00"
+	[string]$TimeDifference = "+2:00",
+
+    [Parameter(mandatory = $true)]
+	[string]$AutomationAccountName
 
 )
 

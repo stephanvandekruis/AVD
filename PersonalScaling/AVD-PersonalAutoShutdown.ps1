@@ -7,6 +7,14 @@ The script does the following:
 * Checks if start on Connect is enabled. Link to how to configure this https://docs.microsoft.com/en-us/azure/virtual-desktop/start-virtual-machine-connect
 * Collects all the Session Hosts in the host pool
 * If the Session Host is running it checks if there is an active session, if there are no active sessions the Session Host will be Deallocated
+
+Required Powershell modules:
+	'Az.Accounts'
+	'Az.Compute'
+	'Az.Resources'
+	'Az.Automation'
+	'Az.DesktopVirtualization'
+
 .PARAMETER AADTenantId
     The tenant ID of the tenant you want to deploy this script in
 .PARAMETER SubscriptionId
@@ -18,7 +26,7 @@ The script does the following:
 .PARAMETER HostPoolName
     The host pool name you want to auto shutdown
 .PARAMETER SkipTag
-    The name of the tag, which will exclude the VM from scaling
+    The name of the tag, which will exclude the VM from scaling. The default value is SkipAutoShutdown
 .PARAMETER TimeDifference
     The time diference with UTC (e.g. +2:00)                    
 .NOTES

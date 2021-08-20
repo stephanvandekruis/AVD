@@ -25,6 +25,7 @@ The script does the following:
 * Checks if start on Connect is enabled. Link to how to configure this https://docs.microsoft.com/en-us/azure/virtual-desktop/start-virtual-machine-connect
 * Collects all the Session Hosts in the host pool
 * If the Session Host is running it checks if there is an active session, if there are no active sessions the Session Host will be Deallocated
+* You can exclude machines from the script by using a tag
 
 ### Download Script
 To set up the script download the DeployAutomationAccount.ps1 to you local computer by running:
@@ -63,4 +64,4 @@ $Params = @{
 .\DeployAutomationAccount.ps1 @Params
 ```
 
-For other information check my blog post on: 
+For other information check my blog post on: https://www.stephanvdkruis.com/2021/08/auto-shutdown-avd-personal-host-pools/

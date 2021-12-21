@@ -1,5 +1,5 @@
 {
-    "Name": "AVD Personal Autoshutdown ",
+    "Name": "AVD Personal Autoshutdown",
     "Id": null,
     "IsCustom": true,
     "Description": "Nessecary rights to run the shutdown script by the automation account",

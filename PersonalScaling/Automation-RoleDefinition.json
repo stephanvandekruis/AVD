@@ -1,0 +1,18 @@
+{
+    "Name": "AVD Personal Autoshutdown ",
+    "Id": null,
+    "IsCustom": true,
+    "Description": "Nessecary rights to run the shutdown script by the automation account",
+    "Actions": [
+      "Microsoft.Compute/*/read",
+      "Microsoft.Automation/*/read",
+      "Microsoft.DesktopVirtualization/*/read",
+      "Microsoft.Compute/virtualMachines/stop/action",
+      "Microsoft.Resources/subscriptions/resourceGroups/read"
+    ],
+    "NotActions": [
+    ],
+    "AssignableScopes": [
+      "/subscriptions/<subscriptionID>"
+    ]
+  }

@@ -44,6 +44,7 @@ This script does the following:
   Creation Date:  21/12/2021		
   Purpose/Change: Added creating of managed identity instead of run as account
 #>
+
 param(
 	[Parameter(mandatory = $true)]
 	[string]$AADTenantId,

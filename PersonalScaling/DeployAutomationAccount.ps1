@@ -265,7 +265,7 @@ Write-Output "Azure Automation Account Name: $AutomationAccountName"
 #Create managed Identity
 Write-Output "Creating Managed Identity"
 
-$ManagedIdentity = Set-AzAutomationAccount  -ResourceGroupName $AutomationRG  -Name $AutomationAccountName -AssignSystemIdentity
+$ManagedIdentity = Get-AzAutomationAccount -ResourceGroupName $AutomationRG -Name $AutomationAccountName
 
 $PrincipalID = $ManagedIdentity.Identity.PrincipalId
 

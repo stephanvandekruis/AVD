@@ -266,9 +266,7 @@ Write-Output "Azure Automation Account Name: $AutomationAccountName"
 #Create managed Identity
 Write-Output "Creating Managed Identity"
 
-$ManagedIdentity = Get-AzAutomationAccount -ResourceGroupName $AutomationRG -Name $AutomationAccountName
-
-$PrincipalID = $ManagedIdentity.Identity.PrincipalId
+$ManagedIdentity = Get-AzADServicePrincipal -DisplayName $AutomationAccountName
 
 #Create custom RoleDefinition 
 
@@ -285,7 +283,7 @@ New-AzRoleDefinition -InputFile  ".\Automation-RoleDefinition.json"
 Start-Sleep -Seconds 60
 
 Write-Output "Assiging the Automation Managed identity the newly created role assingment."
-New-AzRoleAssignment -ObjectId $PrincipalID -RoleDefinitionName 'AVD Personal Autoshutdown'
+New-AzRoleAssignment -ObjectId $ManagedIdentity.Id -RoleDefinitionName 'AVD Personal Autoshutdown'
 
 
 #Creating Automation Schedule

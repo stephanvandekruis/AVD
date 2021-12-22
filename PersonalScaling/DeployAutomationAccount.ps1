@@ -280,7 +280,7 @@ Write-Output "Replacing subsciption ID for the scope"
 
 # create role definition
 Write-Output "Publish new role definition to Azure"
-New-AzRoleDefinition -InputFile  ".\Automation-work.json"
+New-AzRoleDefinition -InputFile  ".\Automation-RoleDefinition.json"
 
 Start-Sleep -Seconds 60
 

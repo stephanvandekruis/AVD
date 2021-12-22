@@ -327,20 +327,6 @@ $RegisterScheduleOutput = Register-AzAutomationScheduledRunbook @RegisterParams
 
 Write-Output "Azure Automation Schedule $($AutomationScheduleOutput.Name) is connected to $RunbookName will first run on $($AutomationScheduleOutput.NextRun)"
 
-Write-Output "Checking if a run as account is present"
-Write-Output "Checking for the default connection name AzureRunAsConnection"
-#Checking if an Run As account is present
-$connectionName = "AzureRunAsConnection"
-
-$RunAsAccount = Get-AzAutomationConnection -ResourceGroupName $AutomationRG -AutomationAccountName $AutomationAccountName -Name $connectionName -ErrorAction SilentlyContinue
-
-if(!$RunAsAccount) {
-	Write-Host "No Run as Account found in the current autmation account - $AutomationAccountName" -ForegroundColor Red
-	Write-Host "Do not forget to create a Run As account inorder for the script to function" -ForegroundColor Red
-}else {
-	Write-Host "Run As account found, no further action required" -ForegroundColor Green
-}
-
 #Ending the script
 Write-Output "The script has completed successfully"
 Write-Output "End"

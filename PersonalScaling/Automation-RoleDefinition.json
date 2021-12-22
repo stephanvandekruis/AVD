@@ -5,14 +5,18 @@
     "Description": "Nessecary rights to run the shutdown script by the automation account",
     "Actions": [
       "Microsoft.Compute/*/read",
-      "Microsoft.Automation/*/read",
       "Microsoft.DesktopVirtualization/*/read",
-      "Microsoft.Compute/virtualMachines/stop/action",
+      "Microsoft.DesktopVirtualization/hostpools/read",
+      "Microsoft.DesktopVirtualization/hostpools/sessionhosts/read",
+      "Microsoft.DesktopVirtualization/hostpools/sessionhosts/usersessions/*",
+      "Microsoft.Compute/virtualMachines/deallocate/action",
       "Microsoft.Resources/subscriptions/resourceGroups/read"
     ],
     "NotActions": [
     ],
     "AssignableScopes": [
-      "/subscriptions/<subscriptionID>"
+      "/subscriptions/3e738a78-cead-4895-b39b-0aaee988a0bd"
     ]
   }
+  
+  

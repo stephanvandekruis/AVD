@@ -15,7 +15,8 @@ This script does the following:
 * Deploys a new Automation Account and imports the necessary modules and runbook
 * Creates an Automation Schedule which runs every 1 hour
 * Connects the Runbook to the Schedule so it will start 
-* Validates if an Run As Account is present
+* ~~ ~~Validates if an Run As Account is present~~ ~~
+* Creates a managed identity with the required roles
 
 ## AVD-PersonalAutoShutdown.ps1
 The AVD-PersonalAutoShudown.ps1 script can run on a specific Host pool.
@@ -28,7 +29,7 @@ The script does the following:
 * You can exclude machines from the script by using a tag
 
 ### Download Script
-To set up the script download the DeployAutomationAccount.ps1 to you local computer by running:
+To setup the script download the DeployAutomationAccount.ps1 to you local computer by running:
 
 
 ```PowerShell
@@ -37,6 +38,13 @@ Set-Location -Path "C:\Temp"
 $Uri = "https://raw.githubusercontent.com/stephanvandekruis/AVD/main/PersonalScaling/DeployAutomationAccount.ps1"
 # Download the script
 Invoke-WebRequest -Uri $Uri -OutFile ".\DeployAutomationAccount.ps1"
+```
+
+Also download the Custom Role Definition for the role assignments 
+```PowerShell
+$Uri = "https://raw.githubusercontent.com/stephanvandekruis/AVD/main/PersonalScaling/Automation-RoleDefinition.json"
+# Download the script
+Invoke-WebRequest -Uri $Uri -OutFile ".\Automation-RoleDefinition.json"
 ```
 
 Log in to your environment

@@ -113,28 +113,20 @@ function Get-LocalDateTime {
 }
 
 # Authenticating
-$connectionName = "AzureRunAsConnection"
+
 try
 {
-    # Get the connection "AzureRunAsConnection "
-    $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName         
+
 
     Write-log "Logging in to Azure..."
-    $connecting = Connect-AzAccount `
-        -ServicePrincipal `
-        -TenantId $servicePrincipalConnection.TenantId `
-        -ApplicationId $servicePrincipalConnection.ApplicationId `
-        -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint 
+    $connecting = Connect-AzAccount -identity 
+
 }
 catch {
-    if (!$servicePrincipalConnection)
-    {
-        $ErrorMessage = "Connection $connectionName not found."
-        throw $ErrorMessage
-    } else{
         Write-Error -Message $_.Exception
+        Write-log "Unable to sign in, terminating script.."
         throw $_.Exception
-    }
+
 }
 
 #starting script

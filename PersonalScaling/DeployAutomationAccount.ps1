@@ -37,7 +37,12 @@ This script does the following:
   Author:         Stephan van de Kruis
   Creation Date:  19/08/2021
   Purpose/Change: Initial script development
-  
+
+  21/12/2021:
+  Version:        1.0
+  Author:         Stephan van de Kruis
+  Creation Date:  21/12/2021		
+  Purpose/Change: Added creating of managed identity instead of run as account
 #>
 param(
 	[Parameter(mandatory = $true)]
@@ -256,7 +261,31 @@ foreach ($ModuleName in $RequiredModules) {
 
 
 Write-Output "Azure Automation Account Name: $AutomationAccountName"
-#Write-Output "Webhook URI: $($WebhookURI.value)"
+
+#Create managed Identity
+Write-Output "Creating Managed Identity"
+
+$ManagedIdentity = Set-AzAutomationAccount  -ResourceGroupName $AutomationRG  -Name $AutomationAccountName -AssignSystemIdentity
+
+$PrincipalID = $ManagedIdentity.Identity.PrincipalId
+
+#Create custom RoleDefinition 
+
+Write-Output "Fethcing Automation-RoleDefinition.json file from c:\temp"
+$RoleDefTemplate = '.\Automation-RoleDefinition.json'
+
+Write-Output "Replacing subsciption ID for the scope"
+((Get-Content -path $RoleDefTemplate -Raw) -replace '<subscriptionID>',$SubscriptionId) | Set-Content -Path $RoleDefTemplate
+
+# create role definition
+Write-Output "Publish new role definition to Azure"
+New-AzRoleDefinition -InputFile  ".\Automation-work.json"
+
+Start-Sleep -Seconds 60
+
+Write-Output "Assiging the Automation Managed identity the newly created role assingment."
+New-AzRoleAssignment -ObjectId $PrincipalID -RoleDefinitionName 'AVD Personal Autoshutdown'
+
 
 #Creating Automation Schedule
 $ScheduleParams = @{

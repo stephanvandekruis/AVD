@@ -39,6 +39,9 @@ Required Powershell modules:
   Version:         1.1
   Purpose/Change:   Improvements
   
+  19-02-2022
+  version:         1.2
+  Purpose/Change:   Added check when for VM in stopped state, to deallocate VM
 #>
 
 param(
@@ -187,8 +190,14 @@ foreach ($SessionHost in $Sessionhosts) {
     }
     # If VM has skiptag we can skip
     if ($VMSkip -contains $SkipTag) {
-        Write-Log "VM '$SessionHostName' contains the skip tag and will be ignored"
+        Write-Log "VM $SessionHostName contains the skip tag and will be ignored"
         continue
+    }
+    # If VM is stopped, deallocate VM
+    if ($VMStatus -eq 'PowerState/stopped'){
+        Write-Log "$SessionHostName is stopped. Start to deallocate VM"
+        $StopVM = Stop-AzVM -Name $VMinstance -ResourceGroupName $SessionHostrg -Force
+        Write-Log "Stopping $SessionhostName ended with status: $($StopVM.Status)"
     }
 
 

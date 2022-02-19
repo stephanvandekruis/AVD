@@ -26,6 +26,7 @@ The script does the following:
 * Checks if start on Connect is enabled. Link to how to configure this https://docs.microsoft.com/en-us/azure/virtual-desktop/start-virtual-machine-connect
 * Collects all the Session Hosts in the host pool
 * If the Session Host is running it checks if there is an active session, if there are no active sessions the Session Host will be Deallocated
+* If the Session Host is in a Stopped state, the script will deallocate the VM
 * You can exclude machines from the script by using a tag
 
 ### Download Script

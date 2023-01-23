@@ -42,6 +42,10 @@ Required Powershell modules:
   19-02-2022
   version:         1.2
   Purpose/Change:   Added check when for VM in stopped state, to deallocate VM
+
+  23-01-2023
+  version:         1.3
+  Purpose/Change:   Made fix when VM resource group is different then AVD objects
 #>
 
 param(
@@ -167,7 +171,7 @@ if($Hostpool.StartVMOnConnect -eq 'True'){
 
 #Getting Session hosts information
 Write-Log 'Getting all session hosts'
-$SessionHosts = @(Get-AzWvdSessionHost -ResourceGroupName $SessionHostrg  -HostPoolName $HostPoolName)
+$SessionHosts = @(Get-AzWvdSessionHost -ResourceGroupName $AVDrg  -HostPoolName $HostPoolName)
 if (!$SessionHosts) {
     Write-Log "There are no session hosts in the Hostpool $($HostPool.Name). Ensure that hostpool has session hosts"
     Write-Log 'End'

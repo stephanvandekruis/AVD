@@ -43,6 +43,12 @@ This script does the following:
   Author:         Stephan van de Kruis
   Creation Date:  21/12/2021		
   Purpose/Change: Added creating of managed identity instead of run as account
+
+  23/01/2023:
+  Version:        1.3
+  Author:         Stephan van de Kruis
+  Creation Date:  21/12/2021		
+  Purpose/Change: Updated so that first the Az.Accounts modules was imported since it was required for the other modules
 #>
 
 param(
@@ -134,12 +140,26 @@ if (!$ResourceGroup) {
 	Write-Output "Resource Group was created with name: $AutomationRG"
 }
 
+
 [array]$RequiredModules = @(
-	'Az.Accounts'
-	'Az.Compute'
-	'Az.Resources'
-	'Az.Automation'
-	'Az.DesktopVirtualization'
+
+    @{
+        "Module" = "Az.Compute"
+        "ModuleVersion" = "5.3.0"
+    },
+    @{
+        "Module" = "Az.Resources"
+        "ModuleVersion" = "6.5.1"
+    },
+    @{
+        "Module" = "Az.Automation"
+        "ModuleVersion" = "1.9.0"
+    },
+    @{
+        "Module" = "Az.DesktopVirtualization"
+        "ModuleVersion" = "3.1.1"
+    }
+    
 )
 
 $SkipHttpErrorCheckParam = (Get-Command Invoke-WebRequest).Parameters['SkipHttpErrorCheck']
@@ -255,10 +275,36 @@ if ($DeploymentStatus.ProvisioningState -ne 'Succeeded') {
 	throw "Some error occurred while deploying a runbook. Deployment Provisioning Status: $($DeploymentStatus.ProvisioningState)"
 }
 
-# Required modules imported from Automation Account Modules gallery for Scale Script execution
-foreach ($ModuleName in $RequiredModules) {
-	Add-ModuleToAutoAccount -ResourceGroupName $AutomationRG -AutomationAccountName $AutomationAccountName -ModuleName $ModuleName
+## First importing the required Az.Accounts Module
+
+$ModuleAzAccount = 'Az.Accounts'
+$ModuleAzAccountVersion = '2.11.1'
+New-AzAutomationModule -AutomationAccountName $AutomationAccountName -ResourceGroupName $AutomationRG -Name $ModuleAzAccount -ContentLinkUri "https://www.powershellgallery.com/api/v2/package/$ModuleAzAccount/$ModuleAzAccountVersion"
+Wait-ForModuleToBeImported -ModuleName $ModuleAzAccount -ResourceGroupName $AutomationRG -AutomationAccountName $AutomationAccountName
+
+
+# Other Required modules imported from Automation Account Modules gallery for Scale Script execution
+foreach ($module in $RequiredModules) {
+
+    $keytoSelectName = "Module"
+    $keytoSelectVersion = "ModuleVersion"
+    
+    if($module.ContainsKey($keytoSelectName)){
+        $ModuleName = $module[$keytoSelectName]
+
+        Write-Host "Importing module: $modulename"
+    }
+
+    if($module.ContainsKey($keytoSelectVersion)){
+        $ModuleVersion = $module[$keytoSelectVersion]
+
+        Write-Host "Importing module: $ModuleName with version $ModuleVersion"
+    }
+    
+    Add-ModuleToAutoAccount -ResourceGroupName $AutomationRG -AutomationAccountName $AutomationAccountName -ModuleName $ModuleName -ModuleVersion $ModuleVersion
+
 }
+
 
 
 Write-Output "Azure Automation Account Name: $AutomationAccountName"
